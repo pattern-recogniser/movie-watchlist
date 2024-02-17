@@ -14,7 +14,23 @@ if (watchlistEl){
     renderWatchlist()
 }
 
+function clickhandler(event){
+    const clickedEl = event.target
+    const clickedElParent = clickedEl.parentElement
+    if(clickedEl.id === "search-btn"){
+        handleSearch()
+    }
+    else if(clickedElParent.classList.contains("add-to-watchlist")){
+        addToWatchList(clickedElParent.parentElement)
+    }
+    else if(clickedElParent.classList.contains("remove-watchlist")){
+        removeFromWatchlist()
+    }
+}
 
+function removeFromWatchlist(){
+    
+}
 function renderWatchlist(){
     if (watchlistEl.textContent.trim() === ""){
         const emptyWatchlistEl = document.getElementById("empty-watchlist")
@@ -47,18 +63,10 @@ function renderWatchlist(){
     }  
 }
 
-function clickhandler(event){
-    const clickedEl = event.target
-    const clickedElParent = clickedEl.parentElement
-    if(clickedEl.id === "search-btn"){
-        handleSearch()
-    }
-    else if(clickedElParent.classList.contains("add-to-watchlist")){
-        addToWatchList(clickedElParent.parentElement)
-    }
-}
+
 
 async function handleSearch(){
+    document.getElementById("empty-search").style.display = "none"
     showLoadingBar()
     const searchString = searchInput.value
     const res = await fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
@@ -105,6 +113,7 @@ async function renderSearchResult(movieList){
         
         `
     }
+    
     searchResultsEl.innerHTML = movieHtmlStr
 }
 
@@ -160,3 +169,6 @@ function getMovieObjectFromEl(movieEl){
     }   
     return movieObject
 }
+// TODO: 1. Render message on adding item
+// 2. Remove functionality
+// 3. 
