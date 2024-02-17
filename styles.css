@@ -65,7 +65,6 @@ button#search-btn{
     right: 0;
 }
 section#empty-search{
-    display: none;
     color: #2E2E2F;
     text-align: center;
     margin-top: 10vh;
@@ -80,9 +79,11 @@ a, a:visited{
     color: inherit;
 }
 section#empty-watchlist p{
+    margin-top: 5rem;
     color: #787878;
     font-size: 1.125rem;
-    font-weight: 700;;
+    font-weight: 700;
+    text-align: center;
 }
 section#empty-watchlist h2{
     font-size: 0.9rem;
@@ -99,9 +100,9 @@ img.add-btn-img{
     height: 1rem;
     width: 1rem;
 }
-div.search-result{
-    padding-bottom: 1rem;
-    width: 85%;
+div.movie{
+    padding: 2rem 0;
+    width: 75%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 4em 1fr 1fr;
@@ -111,6 +112,7 @@ div.search-result{
         "thumbnail plot plot plot";
     align-items: center;
     justify-items: left;
+    border-bottom: 1.5px solid #2C2C2C;
 }
 i.fa-star{
     color: #FEC654;
@@ -121,7 +123,8 @@ i.fa-star{
 img.movie-thumbnail{
     height: 160px;
     grid-area: thumbnail;
-    justify-self: center;
+    justify-self: right;
+    margin-right: 1.5em;
 }
 div.add-to-watchlist img{
     height: 1rem;
@@ -134,6 +137,7 @@ div.add-to-watchlist{
     gap: 0.5em;
     grid-area: add-to-watchlist;
     cursor: pointer;
+    justify-self: right;
 }
 p.running-time, 
 p.genres,
@@ -146,22 +150,47 @@ p.running-time{
 p.genres{
     grid-area: genres;
 }
-div.search-result-title {
+div.movie-title {
     display: flex;
     align-items: baseline;
     gap: 0;
     grid-area: title;
 
 }
-div.search-result-title h2{
+div.movie-title h2{
     font-size: 1.125rem;
 }
-div.search-result-title h3{
+div.movie-title h3{
     font-size: 0.75rem;
 }
 p.plot{
     font-size: 0.875rem;
+    font-weight: 400;
     grid-area: plot;
+    padding-right: 1em;
+    line-height: 1.6em;
 }
-
-
+section#loading-section{
+    margin: 5em auto;
+    width: 100%;
+    text-align: center;
+}
+section#loading-section img{
+    width: 25%;
+}
+.no-movie{
+    margin: 4rem auto;
+    text-align: center;
+    color: #787878;
+}
+div#addedToWatchlistMessage {
+    position: fixed;
+    top: 25em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    display: none;
+}
