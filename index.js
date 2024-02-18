@@ -34,10 +34,10 @@ function renderWatchlist(){
 
 
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
-    watchlistEl.innerHTML = ""
+    let watchlistHtmlStr = ""
     for(let movie of localMoviesData){
         const {Poster, Title, Runtime, Genre, Plot, imdbRating, imdbId} = movie
-        watchlistEl.innerHTML += `
+        watchlistHtmlStr += `
         <div class="movie" data-imdb-id=${imdbId}>
             <img class="movie-thumbnail" src=${decodeURIComponent(Poster)}/>
             <div class="movie-title">
@@ -58,6 +58,7 @@ function renderWatchlist(){
     
         `
     }  
+    watchlistEl.innerHTML = watchlistHtmlStr
     const emptyWatchlistEl = document.getElementById("empty-watchlist")
     if (watchlistEl.textContent.trim() === ""){
         
@@ -143,7 +144,7 @@ function addToWatchList(movieEl){
     const movieObject = getMovieObjectFromEl(movieEl)
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
     let movieDataToWrite
-
+    
     if (localMoviesData){
         if(movieExistsInLocalStorage(movieObject.imdbId, localMoviesData)){
             showAlreadyExistsMessage()
@@ -161,7 +162,13 @@ function addToWatchList(movieEl){
     showAddedToWatchlistMessage()
 }
 function movieExistsInLocalStorage(imdbId, localMoviesData){
-    return localMoviesData.filter(movie => movie.imdbId === imdbId)
+    const filteredArray = localMoviesData.filter(movie => movie.imdbId === imdbId)
+    if(filteredArray.length > 0){
+        return true
+    }
+    if(filteredArray.length === 0){
+        return false
+    }
 }
 function removeFromWatchlist(movieEl){
     const movieIdToRemove = movieEl.dataset.imdbId
