@@ -14,6 +14,20 @@ document.addEventListener("click", clickhandler)
 if (watchlistEl){
     renderWatchlist()
 }
+netlifyTest()
+
+function netlifyTest(){
+    const url = 'https://add-to-watchlist-akarimpil.netlify.app/.netlify/functions/fetchMovie'
+    fetch(url,{
+        method: "POST",
+        body: "testStr",
+        headers:{
+        "Content-Type": "text/plain"
+        }
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
+}
 
 function clickhandler(event){
     const clickedEl = event.target
