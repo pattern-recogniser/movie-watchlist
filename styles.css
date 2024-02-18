@@ -7,13 +7,14 @@ body{
 }
 .container{
     margin: 0 auto;
-    width: 50%;
+    width: 100%;
 }
 header{
     padding: 0 5em;
     height: 30vh;
     display: grid;
     grid-template-columns: 70% 30%;
+    gap: 2em;
     /* justify-items: center; */
     align-items: center;
     background-image: url("images/hero_cropped.jpeg");
@@ -206,4 +207,9 @@ div#alreadyExistsMessage{
     color: white;
     padding: 15px;
     border-radius: 5px;
+}
+@media (min-width: 650px){
+    .container{
+        width: 50%;
+    }
 }
