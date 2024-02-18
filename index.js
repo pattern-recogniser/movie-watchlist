@@ -143,11 +143,12 @@ function addToWatchList(movieEl){
     const movieObject = getMovieObjectFromEl(movieEl)
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
     let movieDataToWrite
-    if(movieExistsInLocalStorage(movieObject.imdbId, localMoviesData)){
-        showAlreadyExistsMessage()
-        return
-    }
+
     if (localMoviesData){
+        if(movieExistsInLocalStorage(movieObject.imdbId, localMoviesData)){
+            showAlreadyExistsMessage()
+            return
+        }
         localMoviesData.push(movieObject)
         movieDataToWrite = localMoviesData
     }
