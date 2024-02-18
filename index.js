@@ -1,6 +1,6 @@
 const searchBtn = document.getElementById("search-btn")
 const searchInput = document.getElementById("movie-input")
-const OMDB_KEY = "2c3092e4"
+
 const baseUrl = "http://www.omdbapi.com/?apikey="
 const searchQuery = "&s="
 const parameterQuery = "&plot=short"
