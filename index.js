@@ -9,6 +9,7 @@ const fullPlotQuery = `&plot=full`
 const searchResultsEl = document.getElementById("search-results-section")
 const watchlistEl = document.getElementById("watchlist")
 
+
 document.addEventListener("click", clickhandler)
 if (watchlistEl){
     renderWatchlist()
@@ -24,24 +25,20 @@ function clickhandler(event){
         addToWatchList(clickedElParent.parentElement)
     }
     else if(clickedElParent.classList.contains("remove-watchlist")){
-        removeFromWatchlist()
+        removeFromWatchlist(clickedElParent.parentElement)
     }
 }
 
-function removeFromWatchlist(){
-    
-}
+
 function renderWatchlist(){
-    if (watchlistEl.textContent.trim() === ""){
-        const emptyWatchlistEl = document.getElementById("empty-watchlist")
-        emptyWatchlistEl.style. display = "none"
-    }
+
 
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
+    watchlistEl.innerHTML = ""
     for(let movie of localMoviesData){
-        const {Poster, Title, Runtime, Genre, Plot, imdbRating} = movie
+        const {Poster, Title, Runtime, Genre, Plot, imdbRating, imdbId} = movie
         watchlistEl.innerHTML += `
-        <div class="movie">
+        <div class="movie" data-imdb-id=${imdbId}>
             <img class="movie-thumbnail" src=${decodeURIComponent(Poster)}/>
             <div class="movie-title">
                 <h2> ${decodeURIComponent(Title)}</h2>
@@ -52,7 +49,7 @@ function renderWatchlist(){
             <p class="running-time">${decodeURIComponent(Runtime)}</p>
             <p class="genres">${decodeURIComponent(Genre)}</p>
             
-            <div class="add-to-watchlist">
+            <div class="remove-watchlist">
                 <img src="images/remove.png"/>
                 <p>Remove</p>
             </div>
@@ -61,6 +58,14 @@ function renderWatchlist(){
     
         `
     }  
+    const emptyWatchlistEl = document.getElementById("empty-watchlist")
+    if (watchlistEl.textContent.trim() === ""){
+        
+        emptyWatchlistEl.style.display = "block"
+    }
+    if(localMoviesData){
+        emptyWatchlistEl.style.display = "none"
+    }
 }
 
 
@@ -71,7 +76,7 @@ async function handleSearch(){
     const searchString = searchInput.value
     const res = await fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
     const data = await res.json()
-    console.log(data)
+
     if(data.Search) {   
         renderSearchResult(data.Search)
     }
@@ -84,9 +89,10 @@ async function renderSearchResult(movieList){
     for (let movie of movieList){
         const res = await fetch(baseUrl + OMDB_KEY + IdQuery + movie.imdbID)
         const movieInfo = await res.json()
-        const {Poster, Title, Runtime, Genre, Plot, imdbRating} = movieInfo
+        const {Poster, Title, Runtime, Genre, Plot, imdbRating, imdbID} = movieInfo
         movieHtmlStr += `
         <div class="movie"
+            data-imdb-id=${imdbID}
             data-poster=${Poster}
             data-title=${encodeURIComponent(Title)}
             data-imdb-rating = ${encodeURIComponent(imdbRating)}
@@ -138,28 +144,43 @@ function addToWatchList(movieEl){
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
     let movieDataToWrite
     if (localMoviesData){
-        movieDataToWrite = localMoviesData.push(movieObject)
+        localMoviesData.push(movieObject)
+        movieDataToWrite = localMoviesData
     }
     else {
         movieDataToWrite = [movieObject]
     }
-    localStorage.setItem("localMoviesData", JSON.stringify(localMoviesData))
+
+    localStorage.setItem("localMoviesData", JSON.stringify(movieDataToWrite))
+
     showAddedToWatchlistMessage()
+}
+function movieExistsInLocalStorage(imdbID, localMoviesData){
+    return true
+}
+function removeFromWatchlist(movieEl){
+    const movieIdToRemove = movieEl.dataset.imdbId
+    let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
+    const movieDataToWrite = localMoviesData.filter(movie => 
+        movie.imdbId != movieIdToRemove)
+    localStorage.setItem("localMoviesData", JSON.stringify(movieDataToWrite))
+    renderWatchlist()
 }
 
 function showAddedToWatchlistMessage() {
-    const messageElement = document.createElement("div");
-    messageElement.id = "addedToWatchlistMessage";
-    messageElement.textContent = "Added to Watchlist";
-    document.body.appendChild(messageElement);
-
+    const messageElement = document.createElement("div")
+    messageElement.id = "addedToWatchlistMessage"
+    messageElement.textContent = "Added to Watchlist"
+    const emptySearchEl = document.getElementById("empty-search")
+    emptySearchEl.parentNode.insertBefore(messageElement, emptySearchEl.nextSibling)
     setTimeout(function() {
-        messageElement.style.display = "none";
+        messageElement.style.display = "none"
     }, 3000);
 }
 
 function getMovieObjectFromEl(movieEl){
     const movieObject = {
+        imdbId: movieEl.dataset.imdbId,
         Poster: movieEl.dataset.poster,
         Title: movieEl.dataset.title,
         imdbRating: movieEl.dataset.imdbRating,
@@ -169,6 +190,3 @@ function getMovieObjectFromEl(movieEl){
     }   
     return movieObject
 }
-// TODO: 1. Render message on adding item
-// 2. Remove functionality
-// 3. 

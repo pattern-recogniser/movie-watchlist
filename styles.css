@@ -126,11 +126,13 @@ img.movie-thumbnail{
     justify-self: right;
     margin-right: 1.5em;
 }
-div.add-to-watchlist img{
+div.add-to-watchlist img, div.remove-watchlist img{
     height: 1rem;
     width: 1rem;
 }
-div.add-to-watchlist{
+div.add-to-watchlist,
+div.remove-watchlist
+{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -141,7 +143,8 @@ div.add-to-watchlist{
 }
 p.running-time, 
 p.genres,
-div.add-to-watchlist{
+div.add-to-watchlist,
+div.remove-watchlist{
     font-size: 0.75rem;
 }
 p.running-time{
@@ -192,5 +195,5 @@ div#addedToWatchlistMessage {
     color: white;
     padding: 15px;
     border-radius: 5px;
-    display: none;
+    /* display: none; */
 }
