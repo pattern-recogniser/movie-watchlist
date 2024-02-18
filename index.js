@@ -143,6 +143,10 @@ function addToWatchList(movieEl){
     const movieObject = getMovieObjectFromEl(movieEl)
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
     let movieDataToWrite
+    if(movieExistsInLocalStorage(movieObject.imdbId, localMoviesData)){
+        showAlreadyExistsMessage()
+        return
+    }
     if (localMoviesData){
         localMoviesData.push(movieObject)
         movieDataToWrite = localMoviesData
@@ -155,8 +159,8 @@ function addToWatchList(movieEl){
 
     showAddedToWatchlistMessage()
 }
-function movieExistsInLocalStorage(imdbID, localMoviesData){
-    return true
+function movieExistsInLocalStorage(imdbId, localMoviesData){
+    return localMoviesData.filter(movie => movie.imdbId === imdbId)
 }
 function removeFromWatchlist(movieEl){
     const movieIdToRemove = movieEl.dataset.imdbId
@@ -176,6 +180,17 @@ function showAddedToWatchlistMessage() {
     setTimeout(function() {
         messageElement.style.display = "none"
     }, 3000);
+}
+
+function showAlreadyExistsMessage(){
+    const messageElement = document.createElement("div")
+    messageElement.id = "alreadyExistsMessage"
+    messageElement.textContent = "Movie already exists in watchlist"
+    const emptySearchEl = document.getElementById("empty-search")
+    emptySearchEl.parentNode.insertBefore(messageElement, emptySearchEl.nextSibling)
+    setTimeout(function() {
+        messageElement.style.display = "none"
+    }, 3000);  
 }
 
 function getMovieObjectFromEl(movieEl){

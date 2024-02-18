@@ -197,3 +197,13 @@ div#addedToWatchlistMessage {
     border-radius: 5px;
     /* display: none; */
 }
+div#alreadyExistsMessage{
+    position: fixed;
+    top: 25em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: palevioletred;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
