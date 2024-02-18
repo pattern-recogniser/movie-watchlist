@@ -19,7 +19,7 @@ function netlifyTest(){
     const url = 'https://add-to-watchlist-akarimpil.netlify.app/.netlify/functions/fetchMovie'
     fetch(url,{
         method: "POST",
-        body: conversationStr,
+        body: "testStr",
         headers:{
             "Content-Type": "text/plain"
         }
