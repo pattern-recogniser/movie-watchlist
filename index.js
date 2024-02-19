@@ -16,11 +16,11 @@ if (watchlistEl){
 }
 netlifyTest()
 
-function netlifyTest(){
+function netlifyTest(searchStr){
     const url = 'https://add-to-watchlist-akarimpil.netlify.app/.netlify/functions/fetchMovie'
     fetch(url,{
         method: "POST",
-        body: "testStr",
+        body: searchStr,
         headers:{
         "Content-Type": "text/plain"
         }
@@ -89,8 +89,9 @@ async function handleSearch(){
     document.getElementById("empty-search").style.display = "none"
     showLoadingBar()
     const searchString = searchInput.value
-    const res = await fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
-    const data = await res.json()
+    const data = netlifyTest(searchString)
+    // const res = await fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
+    // const data = await res.json()
 
     if(data.Search) {   
         renderSearchResult(data.Search)
