@@ -1,12 +1,16 @@
 const OMDB_KEY = process.env.OMDB_KEY
 
+const baseUrl = "https://www.omdbapi.com/?apikey="
+const searchQuery = "&s="
+
 const handler = async(event) => {
   try{
-    const response = fetch()
-    return {
-      statusCode: 200,
-      body: response
-    }
+    // const response = fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
+    console.log(event.body)
+    // return {
+    //   statusCode: 200,
+    //   body: response
+    // }
   } catch (error) {
     return { statusCode: 500, body: error.toString() }
   }
