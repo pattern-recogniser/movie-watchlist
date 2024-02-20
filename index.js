@@ -28,56 +28,12 @@ function clickhandler(event){
         removeFromWatchlist(clickedElParent.parentElement)
     }
 }
-
-
-function renderWatchlist(){
-
-
-    let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
-    let watchlistHtmlStr = ""
-    for(let movie of localMoviesData){
-        const {Poster, Title, Runtime, Genre, Plot, imdbRating, imdbId} = movie
-        watchlistHtmlStr += `
-        <div class="movie" data-imdb-id=${imdbId}>
-            <img class="movie-thumbnail" src=${decodeURIComponent(Poster)}/>
-            <div class="movie-title">
-                <h2> ${decodeURIComponent(Title)}</h2>
-                <i class="fa-solid fa-star"></i>
-                <h3> ${decodeURIComponent(imdbRating)} </h3>
-            </div>
-            
-            <p class="running-time">${decodeURIComponent(Runtime)}</p>
-            <p class="genres">${decodeURIComponent(Genre)}</p>
-            
-            <div class="remove-watchlist">
-                <img src="images/remove.png"/>
-                <p>Remove</p>
-            </div>
-            <p class="plot">${decodeURIComponent(Plot)}</p>
-        </div>
-    
-        `
-    }  
-    watchlistEl.innerHTML = watchlistHtmlStr
-    const emptyWatchlistEl = document.getElementById("empty-watchlist")
-    if (watchlistEl.textContent.trim() === ""){
-        
-        emptyWatchlistEl.style.display = "block"
-    }
-    if(localMoviesData){
-        emptyWatchlistEl.style.display = "none"
-    }
-}
-
-
-
 async function handleSearch(){
     document.getElementById("empty-search").style.display = "none"
     showLoadingBar()
     const searchString = searchInput.value
     const res = await fetch(baseUrl + OMDB_KEY + searchQuery + searchString)
     const data = await res.json()
-
     if(data.Search) {   
         renderSearchResult(data.Search)
     }
@@ -85,6 +41,7 @@ async function handleSearch(){
         renderNoResults()
     }
 }
+
 async function renderSearchResult(movieList){
     let movieHtmlStr = ""
     for (let movie of movieList){
@@ -120,26 +77,40 @@ async function renderSearchResult(movieList){
         
         `
     }
-    
     searchResultsEl.innerHTML = movieHtmlStr
 }
 
-function renderNoResults(){
-    searchResultsEl.innerHTML = `
-    <p>
-    Unable to find what you’re looking for. Please try another search.
-    </p>
-    `
+
+function renderWatchlist(){
+    let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
+    let watchlistHtmlStr = ""
+    for(let movie of localMoviesData){
+        const {Poster, Title, Runtime, Genre, Plot, imdbRating, imdbId} = movie
+        watchlistHtmlStr += `
+        <div class="movie" data-imdb-id=${imdbId}>
+            <img class="movie-thumbnail" src=${decodeURIComponent(Poster)}/>
+            <div class="movie-title">
+                <h2> ${decodeURIComponent(Title)}</h2>
+                <i class="fa-solid fa-star"></i>
+                <h3> ${decodeURIComponent(imdbRating)} </h3>
+            </div>
+            
+            <p class="running-time">${decodeURIComponent(Runtime)}</p>
+            <p class="genres">${decodeURIComponent(Genre)}</p>
+            
+            <div class="remove-watchlist">
+                <img src="images/remove.png"/>
+                <p>Remove</p>
+            </div>
+            <p class="plot">${decodeURIComponent(Plot)}</p>
+        </div>
     
-}
-function showLoadingBar(){
-    searchResultsEl.innerHTML = `
-        <section id="loading-section">
-            <img src="images/loading.gif"/>
-            <p>Searching</p>
-        </section>
         `
+    }  
+    watchlistEl.innerHTML = watchlistHtmlStr
+    checkForEmptyWatchlist()
 }
+
 function addToWatchList(movieEl){
     const movieObject = getMovieObjectFromEl(movieEl)
     let localMoviesData = JSON.parse(localStorage.getItem("localMoviesData"))
@@ -147,7 +118,7 @@ function addToWatchList(movieEl){
     
     if (localMoviesData){
         if(movieExistsInLocalStorage(movieObject.imdbId, localMoviesData)){
-            showAlreadyExistsMessage()
+            showPopupMessage("alreadyExistsMessage", "Movie already exists in watchlist")
             return
         }
         localMoviesData.push(movieObject)
@@ -159,8 +130,28 @@ function addToWatchList(movieEl){
 
     localStorage.setItem("localMoviesData", JSON.stringify(movieDataToWrite))
 
-    showAddedToWatchlistMessage()
+    showPopupMessage("addedToWatchlistMessage", "Added to Watchlist")
 }
+
+
+function renderNoResults(){
+    searchResultsEl.innerHTML = `
+    <p>
+    Unable to find what you’re looking for. Please try another search.
+    </p>
+    ` 
+}
+
+function showLoadingBar(){
+    searchResultsEl.innerHTML = `
+        <section id="loading-section">
+            <img src="images/loading.gif"/>
+            <p>Searching</p>
+        </section>
+        `
+}
+
+
 function movieExistsInLocalStorage(imdbId, localMoviesData){
     const filteredArray = localMoviesData.filter(movie => movie.imdbId === imdbId)
     if(filteredArray.length > 0){
@@ -179,7 +170,7 @@ function removeFromWatchlist(movieEl){
     renderWatchlist()
 }
 
-function showAddedToWatchlistMessage() {
+function showPopupMessage(elementId, messageText){
     const messageElement = document.createElement("div")
     messageElement.id = "addedToWatchlistMessage"
     messageElement.textContent = "Added to Watchlist"
@@ -187,18 +178,7 @@ function showAddedToWatchlistMessage() {
     emptySearchEl.parentNode.insertBefore(messageElement, emptySearchEl.nextSibling)
     setTimeout(function() {
         messageElement.style.display = "none"
-    }, 3000);
-}
-
-function showAlreadyExistsMessage(){
-    const messageElement = document.createElement("div")
-    messageElement.id = "alreadyExistsMessage"
-    messageElement.textContent = "Movie already exists in watchlist"
-    const emptySearchEl = document.getElementById("empty-search")
-    emptySearchEl.parentNode.insertBefore(messageElement, emptySearchEl.nextSibling)
-    setTimeout(function() {
-        messageElement.style.display = "none"
-    }, 3000);  
+    }, 1500);
 }
 
 function getMovieObjectFromEl(movieEl){
@@ -212,4 +192,14 @@ function getMovieObjectFromEl(movieEl){
         Plot: movieEl.dataset.plot
     }   
     return movieObject
+}
+function checkForEmptyWatchlist(){
+    const emptyWatchlistEl = document.getElementById("empty-watchlist")
+    if (watchlistEl.textContent.trim() === ""){
+        
+        emptyWatchlistEl.style.display = "block"
+    }
+    if(localMoviesData){
+        emptyWatchlistEl.style.display = "none"
+    }
 }
